@@ -7,6 +7,11 @@ from pycocotools.coco import COCO
 from torch.utils import data
 import pickle
 
+from Utils.logger import log
+
+
+Tag = 'XrayDataloader'
+
 class XrayDataSet(data.Dataset):
     def __init__(self, root, annotation, class_name=None, transforms=None):
         self.root = root
@@ -21,6 +26,7 @@ class XrayDataSet(data.Dataset):
             self.ids = self.isValid(list(sorted(self.coco.imgs.keys())))
 
         self.ids = list(set(self.ids))
+        log(Tag, 'Dataset Created')
 
     def __getitem__(self, item):
         # Own coco file
@@ -79,10 +85,7 @@ class XrayDataSet(data.Dataset):
         num_objs = len(coco_annotation)
 
         # Annotation is in dictionary format
-        xray_annotation = {}
-        xray_annotation["boxes"] = boxes
-        xray_annotation["class_id"] = class_id
-        xray_annotation["image_id"] = image_id
+        xray_annotation = {"boxes": boxes, "class_id": class_id, "image_id": image_id}
         # xray_annotation["file_name"] = file_name
 
         if self.transforms is not None:
@@ -99,18 +102,22 @@ class XrayDataSet(data.Dataset):
         return ids
 
     def isValid(self, find_id):
-        ids=[]
+        ids = []
         invalid = []
+        log(Tag, 'isValid check len : '+str(len(find_id)))
         for i in find_id:
             file = self.coco.imgs[i]['path'].split('\\', maxsplit=7)[-1].replace('\\', '/')
             if os.path.isfile(os.path.join(self.root, file)):
                 ids.append(i)
             else:
-                invalid.append(i)
-            if not invalid:
-                print("[DEBUG] Empty file found")
-                with open('/debug/empty_file.txt', 'wb') as fp:
-                    pickle.dump(invalid, fp)
+                invalid.append(file)
+        if invalid:
+            log(Tag,'Empty file found')
+            if os.path.exists('./debug') is not True:
+                os.makedirs('debug')
+            with open('./debug/empty_file.txt', 'w') as fp:
+                for s in invalid:
+                    fp.write(str(s) + "\n")
         return ids
 
     def __len__(self):
@@ -118,8 +125,7 @@ class XrayDataSet(data.Dataset):
 
 
 def get_transform():
-    custom_transforms = []
-    custom_transforms.append(torchvision.transforms.ToTensor())
+    custom_transforms = [torchvision.transforms.ToTensor()]
     return torchvision.transforms.Compose(custom_transforms)
 
 
@@ -136,7 +142,8 @@ class XrayDataLoader():
             batch_size=self.batch_size,
             shuffle=True,
             num_workers=6,
-            collate_fn=collate_fn,)
+            collate_fn=collate_fn, )
 
     def get_data_loader(self):
+        log(Tag, 'get_data_loader')
         return self.data_loader

@@ -60,7 +60,7 @@ def check_dataset(data_set, num_of_item):
         bb = np.array(sample_anno["boxes"], dtype=np.float32)
 
         for j in range(len(bb)):
-            ImageDraw.Draw(sample_img).rectangle(bb[j], outline='red')
+            ImageDraw.Draw(sample_img).rectangle(bb[j], outline='red', width = 3)
         np_sample = np.array(sample_img)
         plt.imshow(np_sample)
         plt.show()

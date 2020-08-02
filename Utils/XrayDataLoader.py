@@ -5,7 +5,7 @@ import torchvision
 from PIL import Image
 from pycocotools.coco import COCO
 from torch.utils import data
-
+import pickle
 
 class XrayDataSet(data.Dataset):
     def __init__(self, root, annotation, class_name=None, transforms=None):
@@ -100,12 +100,17 @@ class XrayDataSet(data.Dataset):
 
     def isValid(self, find_id):
         ids=[]
+        invalid = []
         for i in find_id:
             file = self.coco.imgs[i]['path'].split('\\', maxsplit=7)[-1].replace('\\', '/')
             if os.path.isfile(os.path.join(self.root, file)):
                 ids.append(i)
             else:
-                print("[DEBUG] invalid : file empty :", file)
+                invalid.append(i)
+            if not invalid:
+                print("[DEBUG] Empty file found")
+                with open('/debug/empty_file.txt', 'wb') as fp:
+                    pickle.dump(invalid, fp)
         return ids
 
     def __len__(self):

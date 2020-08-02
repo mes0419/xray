@@ -5,7 +5,18 @@ import torchvision
 from PIL import Image
 from pycocotools.coco import COCO
 from torch.utils import data
-from Utils.logger import log
+
+#coalb define
+try:
+  import google.colab
+  IN_COLAB = True
+except:
+  IN_COLAB = False
+
+if IN_COLAB:
+    from xary.Utils.logger import log
+else:
+    from Utils.logger import log
 
 Tag = 'XrayDataloader'
 

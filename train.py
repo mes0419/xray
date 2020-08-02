@@ -34,9 +34,8 @@ def get_data_loader():
     train_data_dir, train_data_coco = check_dir(LOCATION_PATH)
     _data_loader = x_loader.XrayDataLoader(root=train_data_dir, annotation=train_data_coco,
                                           batch_size=train_batch_size).get_data_loader()
-    log(Tag, 'get_data_loader: loader make complete, total dataset : ' + str(len(data_loader.dataset)))
+    log(Tag, 'get_data_loader: loader make complete, total dataset : ' + str(len(_data_loader.dataset)))
     return _data_loader
-
 
 # show image
 def show_image(sample_img, sample_anno):

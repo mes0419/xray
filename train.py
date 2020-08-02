@@ -6,7 +6,10 @@ import os
 import random
 import numpy as np
 import torch
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
+from PIL import Image, ImageDraw
 
 ######[GOLBAL VLAUE]#######
 # Logger
@@ -14,7 +17,6 @@ Tag = 'Train'
 
 # parameters
 train_batch_size = 32
-
 
 def check_dir(path):
     if path == 'colab':
@@ -39,8 +41,7 @@ def get_data_loader():
 
 # show image
 def show_image(sample_img, sample_anno):
-    plt.imshow(sample_img)
-
+    plt.imshow(np.asarray(sample_img))
     # bbox
     bb = np.array(sample_anno["boxes"], dtype=np.float32)
     for j in range(len(bb)):
@@ -50,24 +51,24 @@ def show_image(sample_img, sample_anno):
 
     return plt
 
-def check_dataset(data_loader):
-    sample = random.sample(range(0, len(data_loader) - 1), 3)
+def check_dataset(data_set, num_of_item):
+    sample = random.sample(range(0, len(data_set) - 1), num_of_item)
     for i in sample:
+        plt.figure()
+        sample_img = data_set[i][0]
+        sample_anno = data_set[i][1]
+        bb = np.array(sample_anno["boxes"], dtype=np.float32)
 
-        sample_img = np.array(data_loader[i][0].permute(1, 2, 0), dtype=np.float32)
-        sample_anno = data_loader[i][1]
-
-        show_image(sample_img, sample_anno)
+        for j in range(len(bb)):
+            ImageDraw.Draw(sample_img).rectangle(bb[j], outline='red', width = 3)
+        np_sample = np.array(sample_img)
+        plt.imshow(np_sample)
         plt.show()
 
-        if i == 3:
-            break
 
 if __name__ == '__main__':
     # location
     LOCATION_PATH = 'google_drive'
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     data_loader = get_data_loader()
-    check_dataset(data_loader)
-
-    #testtesttest
+    check_dataset(data_loader.dataset, 10)

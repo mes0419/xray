@@ -5,10 +5,7 @@ import torchvision
 from PIL import Image
 from pycocotools.coco import COCO
 from torch.utils import data
-import pickle
-
 from Utils.logger import log
-
 
 Tag = 'XrayDataloader'
 
@@ -145,5 +142,4 @@ class XrayDataLoader():
             collate_fn=collate_fn, )
 
     def get_data_loader(self):
-        log(Tag, 'get_data_loader')
         return self.data_loader

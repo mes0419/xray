@@ -17,9 +17,8 @@ class XrayDataSet(data.Dataset):
         if self.class_name is not None:
             class_id = sorted(self.coco.getCatIds(catNms=self.class_name))
             self.ids = self.make_id_list(class_id)
-
         else:
-            self.ids = list(sorted(self.coco.imgs.keys()))
+            self.ids = self.isValid(list(sorted(self.coco.imgs.keys())))
 
         self.ids = list(set(self.ids))
 
@@ -96,12 +95,17 @@ class XrayDataSet(data.Dataset):
         ids = []
         for id in class_id:
             find_id = self.coco.getImgIds(catIds=[id])
-            for i in find_id:
-                file = self.coco.imgs[i]['path'].split('\\', maxsplit=7)[-1].replace('\\', '/')
-                if os.path.isfile(os.path.join(self.root, file)):
-                    ids.append(i)
-                else:
-                    print("[DEBUG] Check Empty file :", file)
+            ids.extend(self.isValid(find_id))
+        return ids
+
+    def isValid(self, find_id):
+        ids=[]
+        for i in find_id:
+            file = self.coco.imgs[i]['path'].split('\\', maxsplit=7)[-1].replace('\\', '/')
+            if os.path.isfile(os.path.join(self.root, file)):
+                ids.append(i)
+            else:
+                print("[DEBUG] invalid : file empty :", file)
         return ids
 
     def __len__(self):

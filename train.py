@@ -6,15 +6,15 @@ import torch
 train_batch_size = 32
 
 #location
-LOCATION_PATH = 'colab'
+LOCATION_PATH = 'google_drive'
 
 def check_dir(path):
     if path=='colab':
         train_data_dir = '/content/drive/' + 'Shared drives' + '/YS_NW/2.Data/Train/Data'
         train_coco = '/content/drive/Shared drives/YS_NW/2.Data/Train/Meta/CoCo/coco_rapiscan.json'
     elif path =='google_drive':
-        train_data_dir = '/data/jiylee/dataset/xray/Train/Data'
-        train_coco = '/data/jiylee/dataset/xray/Train/Meta/CoCo/coco_rapiscan.json'
+        train_data_dir = 'G:/공유 드라이브/YS_NW/2.Data/Train/Data'
+        train_coco = 'G:/공유 드라이브/YS_NW/2.Data/Train/Meta/CoCo/coco_rapiscan.json'
     else :
         train_data_dir = '/data/jiylee/dataset/xray/Train/Data'
         train_coco = '/data/jiylee/dataset/xray/Train/Meta/CoCo/coco_rapiscan.json'

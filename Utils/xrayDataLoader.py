@@ -14,7 +14,7 @@ except:
   IN_COLAB = False
 
 if IN_COLAB:
-    from xary.Utils.logger import log
+    from xray.Utils.logger import log
 else:
     from Utils.logger import log
 

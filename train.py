@@ -63,4 +63,3 @@ if __name__ == '__main__':
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     data_loader = get_data_loader()
     sample = check_dataset(data_loader.dataset, 10)
-

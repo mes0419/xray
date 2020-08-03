@@ -40,16 +40,6 @@ def get_data_loader():
     return _data_loader
 
 # show image
-def show_image(sample_img, sample_anno):
-    plt.imshow(np.asarray(sample_img))
-    # bbox
-    bb = np.array(sample_anno["boxes"], dtype=np.float32)
-    for j in range(len(bb)):
-        line = plt.Rectangle((bb[j][0], bb[j][1]), bb[j][2] - bb[j][0], bb[j][3] - bb[j][1], color="red", fill=False,
-                             lw=1)
-        plt.gca().add_patch(line)
-
-    return plt
 
 def check_dataset(data_set, num_of_item):
     sample = random.sample(range(0, len(data_set) - 1), num_of_item)
@@ -58,18 +48,19 @@ def check_dataset(data_set, num_of_item):
         sample_img = data_set[i][0]
         sample_anno = data_set[i][1]
         bb = np.array(sample_anno["boxes"], dtype=np.float32)
-
+        filename = np.array(sample_anno["filename"])
         for j in range(len(bb)):
             ImageDraw.Draw(sample_img).rectangle(bb[j], outline='red', width = 3)
         np_sample = np.array(sample_img)
+        plt.title(filename)
         plt.imshow(np_sample)
         plt.show()
-
+    return sample
 
 if __name__ == '__main__':
     # location
     LOCATION_PATH = 'google_drive'
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     data_loader = get_data_loader()
-    check_dataset(data_loader.dataset, 10)
+    sample = check_dataset(data_loader.dataset, 10)
 

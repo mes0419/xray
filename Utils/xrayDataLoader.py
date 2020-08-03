@@ -87,14 +87,12 @@ class XrayDataSet(data.Dataset):
 
         # Tensorise
         image_id = torch.tensor([image_id])
-        # file_name = torch.tensor([file_name])
 
         # number of objects in the image
         num_objs = len(coco_annotation)
 
         # Annotation is in dictionary format
-        xray_annotation = {"boxes": boxes, "class_id": class_id, "image_id": image_id}
-        # xray_annotation["file_name"] = file_name
+        xray_annotation = {"boxes": boxes, "class_id": class_id, "image_id": image_id, 'filename': file_name}
 
         if self.transforms is not None:
             img = self.transforms(img)

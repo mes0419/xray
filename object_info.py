@@ -26,3 +26,5 @@ if __name__ == '__main__':
     # location
     LOCATION_PATH = 'google_drive'
     class_info = show_class_info()
+
+class_info

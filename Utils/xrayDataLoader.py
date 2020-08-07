@@ -2,6 +2,7 @@ import os
 
 import torch
 import torchvision
+import pandas as pd
 from PIL import Image
 from pycocotools.coco import COCO
 from torch.utils import data
@@ -128,9 +129,19 @@ class XrayDataSet(data.Dataset):
                     fp.write(str(s) + "\n")
         return ids
 
+    # show all category_id and its name
+    def get_object_info(self):
+        cat_ids = self.coco.getCatIds()
+        cats = self.coco.loadCats(cat_ids)
+        df_rows = []
+        for c in sorted(cats, key=lambda x: x["id"]):
+            train_data_cnt = len(self.coco.getImgIds(catIds=c["id"]))
+            df_rows = df_rows + [[c["id"], c["name"], train_data_cnt]]
+
+        return pd.DataFrame(df_rows, columns=["cat_id", "cat_nm", "train_cnt"])
+
     def __len__(self):
         return len(self.ids)
-
 
 def get_transform():
     custom_transforms = [torchvision.transforms.ToTensor()]

@@ -24,5 +24,5 @@ def show_class_info():
 
 if __name__ == '__main__':
     # location
-    LOCATION_PATH = 'dalab'
+    LOCATION_PATH = 'google_drive'
     class_info = show_class_info()

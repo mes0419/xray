@@ -26,3 +26,5 @@ if __name__ == '__main__':
     # location
     LOCATION_PATH = 'dalab'
     class_info = show_class_info()
+
+class_info

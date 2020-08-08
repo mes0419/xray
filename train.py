@@ -41,12 +41,6 @@ def get_data_loader():
     log(Tag, 'get_data_loader: loader make complete, total dataset : ' + str(len(_data_loader.dataset)))
     return _xraydataloader, _data_loader,
 
-def make_label_location(bb):
-    text_x = bb[0] + 1
-    text_y = bb[1] + 5
-    label_text = (text_x, text_y)
-    return label_text
-
 # show image
 def check_dataset(data_set, num_of_item):
     sample = random.sample(range(0, len(data_set) - 1), num_of_item)

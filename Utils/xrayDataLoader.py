@@ -3,6 +3,7 @@
 import os
 import torch
 import torchvision
+import pandas as pd
 from PIL import Image
 from pycocotools.coco import COCO
 from torch.utils import data
@@ -106,9 +107,15 @@ class XrayDataSet(data.Dataset):
     def make_id_list(self, class_id) :
         # 공유폴더에 이미지가 존재하는것만 index를 만들어줌
         ids = []
-        for id in class_id :
-            find_id = self.coco.getImgIds(catIds=[id])
+
+        if isinstance(class_id, list):
+            for id in class_id:
+                find_id = self.coco.getImgIds(catIds=[id])
+                ids.extend(self.isValid(find_id))
+        else:
+            find_id = self.coco.getImgIds(catIds=class_id)
             ids.extend(self.isValid(find_id))
+
         return ids
 
     def isValid(self, find_id) :
@@ -130,7 +137,21 @@ class XrayDataSet(data.Dataset):
                     fp.write(str(s) + "\n")
         return ids
 
-    def __len__(self) :
+    # show all category_id and its name
+    def get_object_info(self):
+        cat_ids = self.coco.getCatIds()
+        cats = self.coco.loadCats(cat_ids)
+        df_rows = []
+        for c in sorted(cats, key=lambda x: x["id"]):
+            #image count in our path
+            path_data_cnt = len(self.make_id_list(c["id"]))
+            #image count in annotation file
+            anno_data_cnt = len(self.coco.getImgIds(catIds=c["id"]))
+            df_rows = df_rows + [[c["id"], c["name"], path_data_cnt, anno_data_cnt]]
+
+        return pd.DataFrame(df_rows, columns=["cat_id", "cat_nm", "path_data_cnt", "anno_data_cnt"])
+
+    def __len__(self):
         return len(self.ids)
 
     def class_id_to_str(self, class_id):

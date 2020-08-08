@@ -51,20 +51,23 @@ def make_label_location(bb):
 def check_dataset(data_set, num_of_item):
     sample = random.sample(range(0, len(data_set) - 1), num_of_item)
     for i in sample:
+        plt.figure(figsize=(10,8))
         sample_img = data_set[i][0]
         sample_anno = data_set[i][1]
         bb = np.array(sample_anno["boxes"], dtype=np.float32)
         filename = np.array(sample_anno["filename"])
         class_names = np.array(sample_anno["class_names"])
         original = plt.subplot(2,1,2)
-        for j in range(len(bb)):
-            draw = ImageDraw.Draw(sample_img)
-            draw.rectangle(bb[j], outline='red', width =3)
-            crop_img = sample_img.crop(bb[j])
-            box_fig = plt.subplot(2, len(bb), j+1)
+        for i in range(len(bb)):
+            crop_img = sample_img.crop(bb[i])
+            box_fig = plt.subplot(2, len(bb), i+1)
             box_img = np.array(crop_img)
             box_fig.imshow(box_img)
-            box_fig.set_title(class_names[j])
+            box_fig.set_title(class_names[i])
+            box_fig.axis('off')
+        for i in range(len(bb)):
+            draw = ImageDraw.Draw(sample_img)
+            draw.rectangle(bb[i], outline='red', width =3)
         np_sample = np.array(sample_img)
         original.imshow(np_sample)
         plt.suptitle(filename)

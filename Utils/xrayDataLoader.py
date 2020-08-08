@@ -171,7 +171,7 @@ class XrayDataSet(data.Dataset):
             class_name.append(self.class_id_to_str(class_id))
         return class_name
 
-def get_transform() :
+def get_transform():
     custom_transforms = [torchvision.transforms.ToTensor()]
     return torchvision.transforms.Compose(custom_transforms)
 

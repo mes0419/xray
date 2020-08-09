@@ -1,3 +1,53 @@
-#cocoapi
+- cocoapi
 cmd : pip install git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI
 git : https://github.com/philferriere/cocoapi
+
+- class_id and class_name
+34:'ZippoOil', 37:'Chisel', 24:'Scissors', 30:'SupplymentaryBattery', 22:'PrtableGas',
+36:'Plier', 15:'Knife', 17:'Lighter', 11:'Hammer', 9:'Gun', 20:'MetalPipe', 25:'Screwdriver',
+4:'Axe', 28:'Spanner', 23:'Saw', 10:'GunParts', 1:'Aerosol', 19:'Match', 2:'Alcohol',
+39:'Electronic cigarettes(Liquid)', 12:'HandCuffs', 41:'Throwing Knife', 32:'Thinner',
+40:'stun gun', 38:'Electronic cigarettes', 26:'SmartPhone', 13:'HDD', 27:'SolidFuel',
+6:'Battery', 3:'Awl', 18:'Liquid', 33:'USB', 31:'TabletPC', 29:'SSD', 21:'NailClippers',
+16:'Laptop', 7:'Bullet', 8:'Firecracker', 5:'Bat'
+
+    #original
+    00 = {dict: 4} {'id': 34, 'name': 'ZippoOil', 'supercategory': '', 'color': ''}
+    01 = {dict: 4} {'id': 37, 'name': 'Chisel', 'supercategory': '', 'color': ''}
+    02 = {dict: 4} {'id': 24, 'name': 'Scissors', 'supercategory': '', 'color': ''}
+    03 = {dict: 4} {'id': 30, 'name': 'SupplymentaryBattery', 'supercategory': '', 'color': ''}
+    04 = {dict: 4} {'id': 22, 'name': 'PrtableGas', 'supercategory': '', 'color': ''}
+    05 = {dict: 4} {'id': 36, 'name': 'Plier', 'supercategory': '', 'color': ''}
+    06 = {dict: 4} {'id': 15, 'name': 'Knife', 'supercategory': '', 'color': ''}
+    07 = {dict: 4} {'id': 17, 'name': 'Lighter', 'supercategory': '', 'color': ''}
+    08 = {dict: 4} {'id': 11, 'name': 'Hammer', 'supercategory': '', 'color': ''}
+    09 = {dict: 4} {'id': 9, 'name': 'Gun', 'supercategory': '', 'color': ''}
+    10 = {dict: 4} {'id': 20, 'name': 'MetalPipe', 'supercategory': '', 'color': ''}
+    11 = {dict: 4} {'id': 25, 'name': 'Screwdriver', 'supercategory': '', 'color': ''}
+    12 = {dict: 4} {'id': 4, 'name': 'Axe', 'supercategory': '', 'color': ''}
+    13 = {dict: 4} {'id': 28, 'name': 'Spanner', 'supercategory': '', 'color': ''}
+    14 = {dict: 4} {'id': 23, 'name': 'Saw', 'supercategory': '', 'color': ''}
+    15 = {dict: 4} {'id': 10, 'name': 'GunParts', 'supercategory': '', 'color': ''}
+    16 = {dict: 4} {'id': 1, 'name': 'Aerosol', 'supercategory': '', 'color': ''}
+    17 = {dict: 4} {'id': 19, 'name': 'Match', 'supercategory': '', 'color': ''}
+    18 = {dict: 4} {'id': 2, 'name': 'Alcohol', 'supercategory': '', 'color': ''}
+    19 = {dict: 4} {'id': 39, 'name': 'Electronic cigarettes(Liquid)', 'supercategory': '', 'color': ''}
+    20 = {dict: 4} {'id': 12, 'name': 'HandCuffs', 'supercategory': '', 'color': ''}
+    21 = {dict: 4} {'id': 41, 'name': 'Throwing Knife', 'supercategory': '', 'color': ''}
+    22 = {dict: 4} {'id': 32, 'name': 'Thinner', 'supercategory': '', 'color': ''}
+    23 = {dict: 4} {'id': 40, 'name': 'stun gun', 'supercategory': '', 'color': ''}
+    24 = {dict: 4} {'id': 38, 'name': 'Electronic cigarettes', 'supercategory': '', 'color': ''}
+    25 = {dict: 4} {'id': 26, 'name': 'SmartPhone', 'supercategory': '', 'color': ''}
+    26 = {dict: 4} {'id': 13, 'name': 'HDD', 'supercategory': '', 'color': ''}
+    27 = {dict: 4} {'id': 27, 'name': 'SolidFuel', 'supercategory': '', 'color': ''}
+    28 = {dict: 4} {'id': 6, 'name': 'Battery', 'supercategory': '', 'color': ''}
+    29 = {dict: 4} {'id': 3, 'name': 'Awl', 'supercategory': '', 'color': ''}
+    30 = {dict: 4} {'id': 18, 'name': 'Liquid', 'supercategory': '', 'color': ''}
+    31 = {dict: 4} {'id': 33, 'name': 'USB', 'supercategory': '', 'color': ''}
+    32 = {dict: 4} {'id': 31, 'name': 'TabletPC', 'supercategory': '', 'color': ''}
+    33 = {dict: 4} {'id': 29, 'name': 'SSD', 'supercategory': '', 'color': ''}
+    34 = {dict: 4} {'id': 21, 'name': 'NailClippers', 'supercategory': '', 'color': ''}
+    35 = {dict: 4} {'id': 16, 'name': 'Laptop', 'supercategory': '', 'color': ''}
+    36 = {dict: 4} {'id': 7, 'name': 'Bullet', 'supercategory': '', 'color': ''}
+    37 = {dict: 4} {'id': 8, 'name': 'Firecracker', 'supercategory': '', 'color': ''}
+    38 = {dict: 4} {'id': 5, 'name': 'Bat', 'supercategory': '', 'color': ''}

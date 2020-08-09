@@ -8,7 +8,8 @@ import random
 import numpy as np
 import torch
 import matplotlib
-matplotlib.use('TkAgg')
+# matplotlib.use('TkAgg')
+matplotlib.use('module://backend_interagg')
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
 
@@ -18,6 +19,11 @@ Tag = 'Train'
 
 # parameters
 train_batch_size = 32
+
+# Training class selection
+class_name = ['Lighter', 'USB']
+# ALL = all img / SD = Single Default / SO = Single Others / MO = Multiple Others / MC = Multiple Categories
+img_type = 'SD'
 
 def check_dir(path):
     if path == 'colab':
@@ -36,6 +42,8 @@ def check_dir(path):
 def get_data_loader():
     train_data_dir, train_data_coco = check_dir(LOCATION_PATH)
     _xraydataloader = x_loader.XrayDataLoader(root=train_data_dir, annotation=train_data_coco,
+                                          class_name=class_name,
+                                          img_type=img_type,
                                           batch_size=train_batch_size)
     _data_loader = _xraydataloader.get_data_loader()
     log(Tag, 'get_data_loader: loader make complete, total dataset : ' + str(len(_data_loader.dataset)))
@@ -74,4 +82,8 @@ if __name__ == '__main__':
     LOCATION_PATH = 'google_drive'
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     xray_loader, data_loader = get_data_loader()
-    sample = check_dataset(data_loader.dataset, 1)
+    sample = check_dataset(data_loader.dataset, 3)
+
+# torch.cuda.get_device_name()
+# torch.cuda.is_available()
+# torch.__version__

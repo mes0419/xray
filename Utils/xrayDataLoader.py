@@ -25,18 +25,19 @@ else:
     from Utils.logger import log
 
 class XrayDataSet(data.Dataset):
-    def __init__(self, root, annotation, class_name=None, img_type=None, transforms=None) :
+    def __init__(self, root, annotation, class_name=None, img_type=None, flag=None, transforms=None) :
         self.root = root
         self.coco = COCO(annotation)
         self.class_name = class_name
         self.img_type = img_type
+        self.flag = flag
         self.transforms = transforms
 
         if self.class_name is not None :
             class_id = sorted(self.coco.getCatIds(catNms=self.class_name))
-            self.ids = self.make_id_list(class_id, self.class_name, self.img_type)
+            self.ids = self.make_id_list(class_id, self.class_name, self.img_type, self.flag)
         else :
-            self.ids = self.isValid(list(sorted(self.coco.imgs.keys())), class_name=None, img_type=self.img_type)
+            self.ids = self.isValid(list(sorted(self.coco.imgs.keys())), class_name=None, img_type=self.img_type, flag=self.flag)
 
         self.ids = list(set(self.ids))
         log(Tag, 'Dataset Created')
@@ -84,7 +85,8 @@ class XrayDataSet(data.Dataset):
             cid = coco_annotation[i]["category_id"]
             class_id.append(cid)
 
-        file_name = img_info[0]["file_name"]
+        # file_name = img_info[0]["file_name"]
+        file_name=file_path
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
         class_names = self.get_class_names(class_id)
         class_id = torch.as_tensor(class_id)
@@ -105,30 +107,41 @@ class XrayDataSet(data.Dataset):
 
         return img, xray_annotation
 
-    def make_id_list(self, class_id, class_name, img_type) :
+    def make_id_list(self, class_id, class_name, img_type, flag) :
         # 공유폴더에 이미지가 존재하는것만 index를 만들어줌
         ids = []
 
         if isinstance(class_id, list):
             for id in class_id:
                 find_id = self.coco.getImgIds(catIds=[id])
-                ids.extend(self.isValid(find_id, class_name, img_type))
+                ids.extend(self.isValid(find_id, class_name, img_type, flag))
         else:
             find_id = self.coco.getImgIds(catIds=class_id)
-            ids.extend(self.isValid(find_id, class_name, img_type))
+            ids.extend(self.isValid(find_id, class_name, img_type, flag))
 
         return ids
 
-    def isValid(self, find_id, class_name, img_type) :
+    def isValid(self, find_id, class_name, img_type, flag):
         ids = []
         invalid = []
         log(Tag, 'isValid check len : ' + str(len(find_id)))
         for i in find_id :
-            file = self.coco.imgs[i]['path'].split('\\', maxsplit=7)[-1].replace('\\', '/')
-            if os.path.isfile(os.path.join(self.root, file)):
-                ids.append(i)
-            else :
-                invalid.append(file)
+            if flag == "1":
+                class_name_anno = self.coco.imgs[i]['path'].split('\\')[7]
+                img_type_anno = self.coco.imgs[i]['path'].split('\\')[8]
+
+                if class_name_anno in class_name and img_type_anno in self.get_img_type(img_type):
+                    file = self.coco.imgs[i]['path'].split('\\', maxsplit=7)[-1].replace('\\', '/')
+                    if os.path.isfile(os.path.join(self.root, file)):
+                        ids.append(i)
+                    else :
+                        invalid.append(file)
+            else:
+                file = self.coco.imgs[i]['path'].split('\\', maxsplit=7)[-1].replace('\\', '/')
+                if os.path.isfile(os.path.join(self.root, file)):
+                    ids.append(i)
+                else :
+                    invalid.append(file)
         if invalid:
             log(Tag, 'Empty file found: '+str(len(invalid)))
             if os.path.exists('./debug') is not True :
@@ -140,19 +153,12 @@ class XrayDataSet(data.Dataset):
 
     def get_img_type(self, img_type):
 
-        if img_type == "SD":
-            img_type_nm = "Single_Default"
-        elif img_type == "SO":
-            img_type_nm = "Single_Other"
-        elif img_type == "MC":
-            img_type_nm = "Multiple_Categories"
-        elif img_type == "MO":
-            img_type_nm = "Multiple_Other"
-        else:
-            img_type_nm = "All"
-
-        return img_type_nm
-
+        img_type_dict = {"SD":"Single_Default"
+                       ,"SO":"Single_Other"
+                       ,"MC":"Multiple_Categories"
+                       ,"MO":"Multiple_Other"
+        }
+        return [img_type_dict[x] for x in img_type]
 
     # show all category_id and its name
     def get_object_info(self):
@@ -161,7 +167,7 @@ class XrayDataSet(data.Dataset):
         df_rows = []
         for c in sorted(cats, key=lambda x: x["id"]):
             #image count in our path
-            path_data_cnt = len(self.make_id_list(c["id"]))
+            path_data_cnt = len(self.make_id_list(c["id"], class_name=None, img_type=None, flag=None))
             #image count in annotation file
             anno_data_cnt = len(self.coco.getImgIds(catIds=c["id"]))
             df_rows = df_rows + [[c["id"], c["name"], path_data_cnt, anno_data_cnt]]
@@ -197,8 +203,8 @@ def collate_fn(batch) :
     return tuple(zip(*batch))
 
 class XrayDataLoader() :
-    def __init__(self, root, annotation, batch_size, class_name, img_type, transfroms=None) :
-        self.xray_data_set = XrayDataSet(root, annotation, class_name, img_type, transfroms)
+    def __init__(self, root, annotation, batch_size, class_name, img_type, flag, transfroms=None) :
+        self.xray_data_set = XrayDataSet(root, annotation, class_name, img_type, flag, transfroms)
         self.batch_size = batch_size
         self.data_loader = torch.utils.data.DataLoader(
             dataset=self.xray_data_set,
@@ -209,3 +215,4 @@ class XrayDataLoader() :
 
     def get_data_loader(self):
         return self.data_loader
+

@@ -1,7 +1,9 @@
 ######[IMPORT MODULE]#######
-
 from Utils import xrayDataLoader as x_loader
 from Utils.logger import log
+
+import importlib
+importlib.reload(x_loader)
 
 import os
 import random
@@ -21,9 +23,16 @@ Tag = 'Train'
 train_batch_size = 32
 
 # Training class selection
-class_name = ['Lighter', 'USB']
-# ALL = all img / SD = Single Default / SO = Single Others / MO = Multiple Others / MC = Multiple Categories
-img_type = 'SD'
+class_name = ['Knife']
+
+# SD = Single Default / SO = Single Others / MO = Multiple Others / MC = Multiple Categories
+img_type = ["SD"]
+# img_type = ["SD", "SO"]
+
+# Image Extraction Filter
+# 0: get images of classes from all folders
+# 1: get images of classes corresponding to the folders of specified class names
+flag = "1"
 
 def check_dir(path):
     if path == 'colab':
@@ -44,6 +53,7 @@ def get_data_loader():
     _xraydataloader = x_loader.XrayDataLoader(root=train_data_dir, annotation=train_data_coco,
                                           class_name=class_name,
                                           img_type=img_type,
+                                          flag=flag,
                                           batch_size=train_batch_size)
     _data_loader = _xraydataloader.get_data_loader()
     log(Tag, 'get_data_loader: loader make complete, total dataset : ' + str(len(_data_loader.dataset)))
@@ -75,6 +85,7 @@ def check_dataset(data_set, num_of_item):
         plt.suptitle(filename)
         plt.tight_layout()
         plt.show()
+        print(filename)
     return sample
 
 if __name__ == '__main__':
@@ -82,7 +93,7 @@ if __name__ == '__main__':
     LOCATION_PATH = 'google_drive'
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     xray_loader, data_loader = get_data_loader()
-    sample = check_dataset(data_loader.dataset, 3)
+    sample = check_dataset(data_loader.dataset, 10)
 
 # torch.cuda.get_device_name()
 # torch.cuda.is_available()

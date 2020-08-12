@@ -1,6 +1,19 @@
 ######[IMPORT MODULE]#######
-from Utils import xrayDataLoader as x_loader
-from Utils.logger import log
+# coalb detect logic
+try:
+    import google.colab
+    IN_COLAB = True
+except:
+    IN_COLAB = False
+
+if IN_COLAB:
+    from xray.Utils import xrayDataLoader as x_loader
+    from xray.Utils.logger import log
+else:
+    from Utils import xrayDataLoader as x_loader
+    from Utils.logger import log
+    # matplotlib.use('TkAgg')
+    matplotlib.use('module://backend_interagg')
 
 import importlib
 importlib.reload(x_loader)
@@ -10,8 +23,6 @@ import random
 import numpy as np
 import torch
 import matplotlib
-# matplotlib.use('TkAgg')
-matplotlib.use('module://backend_interagg')
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
 

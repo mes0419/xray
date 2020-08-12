@@ -1,5 +1,22 @@
-from Utils import xrayDataLoader as x_loader
-from Utils.logger import log
+######[IMPORT MODULE]#######
+# coalb detect logic
+try:
+    import google.colab
+    IN_COLAB = True
+except:
+    IN_COLAB = False
+
+if IN_COLAB:
+    from xray.Utils import xrayDataLoader as x_loader
+    from xray.Utils.logger import log
+else:
+    from Utils import xrayDataLoader as x_loader
+    from Utils.logger import log
+    # matplotlib.use('TkAgg')
+    matplotlib.use('module://backend_interagg')
+
+import importlib
+importlib.reload(x_loader)
 
 def check_dir(path):
     if path == 'colab':
@@ -17,7 +34,8 @@ def check_dir(path):
 def show_class_info():
     train_data_dir, train_data_coco = check_dir(LOCATION_PATH)
 
-    dataset = x_loader.XrayDataSet(root=train_data_dir, annotation=train_data_coco)
+    dataset = x_loader.XrayDataSet(root=train_data_dir, annotation=train_data_coco
+                                   , class_name=None, img_type=None, flag=None)
     class_list =dataset.get_object_info()
 
     return class_list

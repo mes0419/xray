@@ -6,6 +6,9 @@ try:
 except:
     IN_COLAB = False
 
+import matplotlib
+import matplotlib.pyplot as plt
+
 if IN_COLAB:
     from xray.Utils import xrayDataLoader as x_loader
     from xray.Utils.logger import log
@@ -44,5 +47,5 @@ if __name__ == '__main__':
     # location
     LOCATION_PATH = 'google_drive'
     class_info = show_class_info()
-
-class_info
+    ax = class_info.plot(x='ID', kind='bar', rot=0)
+    plt.show()

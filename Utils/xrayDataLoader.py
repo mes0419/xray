@@ -86,7 +86,7 @@ class XrayDataSet(data.Dataset):
             class_id.append(cid)
 
         # file_name = img_info[0]["file_name"]
-        file_name=file_path
+        file_name = file_path
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
         class_names = self.get_class_names(class_id)
         class_id = torch.as_tensor(class_id)
@@ -165,14 +165,35 @@ class XrayDataSet(data.Dataset):
         cat_ids = self.coco.getCatIds()
         cats = self.coco.loadCats(cat_ids)
         df_rows = []
-        for c in sorted(cats, key=lambda x: x["id"]):
+        for cat in sorted(cats, key=lambda x: x["id"]):
             #image count in our path
-            path_data_cnt = len(self.make_id_list(c["id"], class_name=None, img_type=None, flag=None))
+            path_data = self.make_id_list(cat["id"], class_name=None, img_type=None, flag=None)
+            path_data_cnt = len(path_data)
             #image count in annotation file
-            anno_data_cnt = len(self.coco.getImgIds(catIds=c["id"]))
-            df_rows = df_rows + [[c["id"], c["name"], path_data_cnt, anno_data_cnt]]
+            anno_data = self.coco.getImgIds(catIds=cat["id"])
+            anno_data_cnt = len(anno_data)
+            sd, so, mc, mo = self.get_type_count(path_data)
+            df_rows = df_rows + [[cat['id'], cat['name'], anno_data_cnt, path_data_cnt, sd, so, mc, mo]]
 
-        return pd.DataFrame(df_rows, columns=["cat_id", "cat_nm", "path_data_cnt", "anno_data_cnt"])
+        return pd.DataFrame(df_rows, columns=['ID', "Name", 'ANNO_TOTAL', 'PATH_TOTAL', 'Single_Default', 'Single_Other',
+                                              'Multiple_Categories', 'Multiple_Other'])
+
+    def get_type_count(self, anno_data):
+        single_Default = 0
+        single_Other = 0
+        multiple_Categories = 0
+        multiple_Other = 0
+        for anno in anno_data :
+            imgs = self.coco.loadImgs(anno)
+            if 'Single_Default' in imgs[0]['path'] :
+                single_Default += 1
+            elif 'Single_Other' in imgs[0]['path'] :
+                single_Other += 1
+            elif 'Multiple_Categories' in imgs[0]['path'] :
+                multiple_Categories += 1
+            else:
+                multiple_Other += 1
+        return single_Default, single_Other, multiple_Categories, multiple_Other
 
     def __len__(self):
         return len(self.ids)
@@ -194,7 +215,7 @@ class XrayDataSet(data.Dataset):
             class_name.append(self.class_id_to_str(class_id))
         return class_name
 
-def get_transform():
+def get_transform() :
     custom_transforms = [torchvision.transforms.ToTensor()]
     return torchvision.transforms.Compose(custom_transforms)
 
